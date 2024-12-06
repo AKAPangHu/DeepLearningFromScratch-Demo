@@ -1,6 +1,8 @@
+import pickle
+
 import numpy as np
 import matplotlib.pylab as plt
-
+from dataset.mnist import load_mnist
 
 def step_function(x):
     return np.array(x > 0, dtype=int)
@@ -32,14 +34,9 @@ def identity_function(a):
 
 
 def init_network():
-    network = {}
-    network['W1'] = np.array([[0.1, 0.3, 0.5], [0.2, 0.4, 0.6]])
-    network['b1'] = np.array([0.1, 0.2, 0.3])
-    network['W2'] = np.array([[0.1, 0.4], [0.2, 0.5], [0.3, 0.6]])
-    network['b2'] = np.array([0.1, 0.2])
-    network['W3'] = np.array([[0.1, 0.3], [0.2, 0.4]])
-    network['b3'] = np.array([0.1, 0.2])
-    return network
+    with open("sample_weight.pkl", 'rb') as f:
+        network = pickle.load(f)
+        return network
 
 
 def forward(X, network):
@@ -51,11 +48,11 @@ def forward(X, network):
     a2 = np.dot(z1, W2) + b2
     z2 = sigmoid(a2)
     a3 = np.dot(z2, W3) + b3
-    y = identity_function(a3)
+    y = softmax_v2(a3)
 
     return y
 
 
-network = init_network()
-r = forward([0.1, 0.2], network)
-print(r)
+def get_data():
+    (x_train, t_train), (x_test, t_test) = load_mnist(flatten=True, normalize=False)
+    return x_test, t_test

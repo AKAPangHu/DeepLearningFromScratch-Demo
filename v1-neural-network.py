@@ -39,7 +39,7 @@ def init_network():
         return network
 
 
-def forward(X, network):
+def predict(X, network):
     W1, W2, W3 = network['W1'], network['W2'], network['W3']
     b1, b2, b3 = network['b1'], network['b2'], network['b3']
     a1 = np.dot(X, W1) + b1
@@ -52,7 +52,19 @@ def forward(X, network):
 
     return y
 
-
+#当前使用测试数据
 def get_data():
     (x_train, t_train), (x_test, t_test) = load_mnist(flatten=True, normalize=False)
     return x_test, t_test
+
+
+x, t = get_data()
+network = init_network()
+accuracy_cnt = 0
+for i in range(len(x)):
+    y = predict(network, x[i])
+    p = np.argmax(y) # 获取概率最高的元素的索引
+    if p == t[i]:
+        accuracy_cnt += 1
+
+print("Accuracy:" + str(float(accuracy_cnt) / len(x)))
